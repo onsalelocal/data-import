@@ -65,4 +65,16 @@
         </dependency>
     </dependencies>
   
+    <repositories>
+        <repository>
+            <id>onsalelocal-snapshots</id>
+            <!--url>https://raw.github.com/onsalelocal/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots-->
+            <url>https://raw.github.com/onsalelocal/mvn-repo/master/snapshots</url>
+        </repository>
+    </repositories>
+
 </project>
