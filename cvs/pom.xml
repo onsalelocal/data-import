@@ -11,7 +11,7 @@
   </parent>
   
     <properties>
-        <jetty.run.port>6666</jetty.run.port>
+        <jetty.run.port>9999</jetty.run.port>
     </properties>
     
     <build>
