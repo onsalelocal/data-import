@@ -37,7 +37,7 @@
         <filter-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</filter-class>
         <init-param>
             <param-name>com.sun.jersey.config.property.packages</param-name>
-            <param-value>com.gaoshin.onsalelocal.safeway.resource;common.util.web</param-value>
+            <param-value>com.onsalelocal.michaels.resource;common.util.web</param-value>
         </init-param>
         <init-param>
             <param-name>com.sun.jersey.config.property.WebPageContentRegex</param-name>

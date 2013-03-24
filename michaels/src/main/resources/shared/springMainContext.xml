@@ -15,7 +15,7 @@
         </property>
     </bean>
 
-    <context:component-scan base-package="common.db,com.gaoshin.onsalelocal.api,com.gaoshin.onsalelocal.safeway"/>
+    <context:component-scan base-package="common.db,com.gaoshin.onsalelocal.api,com.onsalelocal.michaels"/>
     <import resource="classpath:springDbContext.xml"/>
     <import resource="classpath:springHibernateContext.xml"/>
 </beans>
