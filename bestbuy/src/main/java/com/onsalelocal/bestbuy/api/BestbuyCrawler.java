@@ -105,6 +105,7 @@ public class BestbuyCrawler {
 		}
 
 		BestbuyCrawler crawler = new BestbuyCrawler();
+
 		crawler.listStores(storesXml);
 
 	}
