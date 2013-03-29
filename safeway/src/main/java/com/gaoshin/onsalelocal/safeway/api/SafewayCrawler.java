@@ -15,11 +15,15 @@ import common.crawler.Link;
 
 public class SafewayCrawler extends CrawlerBase {
 	public List<WebCoupon> listWeekSpecial(String storeId) throws Exception {
+		
+		 
 		List<WebCoupon> result = new ArrayList<WebCoupon>();
 		String url = "http://mobile.safeway.com/WeeklySpecials?service=WeeklySpecials&storeId=" + storeId;
         Document doc = getDocumentFromUrl(url);
         List<Element> elements = selectElements(doc, "SPAN", "class", "items-list-span");
         for(Element ele : elements) {
+        	
+        	System.out.println("3333");
         	String eleTxt = ele.getText();
         	eleTxt = eleTxt.replaceAll("\\\"", "\\\\\"");
             Node catNode = ele.getParent().selectSingleNode(".//SPAN[@class='category-name-span']");
@@ -37,6 +41,8 @@ public class SafewayCrawler extends CrawlerBase {
                 	map.put(split[0], URLDecoder.decode(split[1]));
             	}
             	
+            	 
+            	
                 WebCoupon coupon = new WebCoupon();
                 result.add(coupon);
             	coupon.setCategory(category);
@@ -48,14 +54,18 @@ public class SafewayCrawler extends CrawlerBase {
             	coupon.setImageUrl(map.get("ItemImage"));
             	coupon.setUrl(link.href.startsWith("http") ? link.href : "http://m.safeway.com" + link.href);
             }
+            
+            System.out.println("3333");
         }
         return result;
 	}
 
 	public static void main(String[] args) throws Exception {
 		SafewayCrawler crawler = new SafewayCrawler();
+		
 		for(WebCoupon wc : crawler.listWeekSpecial("1108")) {
-        	System.out.println(wc.getTitle() + "\n" + wc.getListPrice() + "\n" + wc.getDescription() + "\n" + wc.getImageUrl() + "\n" + wc.getUrl() + "\n");
+			 
+			System.out.println(wc.getTitle() + "\n" + wc.getListPrice() + "\n" + wc.getDescription() + "\n" + wc.getImageUrl() + "\n" + wc.getUrl() + "\n");
 		}
     }
 }
