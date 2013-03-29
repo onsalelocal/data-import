@@ -13,12 +13,13 @@ import common.db.dao.impl.GenericDaoImpl;
 public class BestbuyDaoImpl extends GenericDaoImpl implements BestbuyDao {
 
 	@Override
-    public StoreList listStores() {
+	public StoreList listStores() {
 		String sql = "select * from Store";
 		List<Store> list = queryBySql(Store.class, null, sql);
 		StoreList data = new StoreList();
 		data.setItems(list);
-	    return data;
-    }
+		return data;
+
+	}
 
 }

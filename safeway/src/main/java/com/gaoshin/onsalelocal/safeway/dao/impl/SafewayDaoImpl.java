@@ -76,6 +76,8 @@ public class SafewayDaoImpl extends GenericDaoImpl implements SafewayDao {
 					", 'Created', 0, 0" + 
 					" from Store";
 		update(sql);
+		
+		
     }
 
 }

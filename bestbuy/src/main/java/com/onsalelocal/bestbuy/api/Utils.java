@@ -54,7 +54,8 @@ public class Utils {
 			throw new IOException("Could not create directory: " + targetDir);
 		}
 		ZipFile zipFile = new ZipFile(theFile);
-		for (Enumeration entries = zipFile.entries(); entries.hasMoreElements();) {
+		for (Enumeration<?> entries = zipFile.entries(); entries
+				.hasMoreElements();) {
 			ZipEntry entry = (ZipEntry) entries.nextElement();
 			File file = new File(targetDir, File.separator + entry.getName());
 			if (!buildDirectory(file.getParentFile())) {
