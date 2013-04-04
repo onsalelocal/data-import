@@ -35,6 +35,8 @@ public class SafewayDaoImpl extends GenericDaoImpl implements SafewayDao {
 		GeoRange range = Geocode.getRange(lat, lng, radius);
 		String sql = "select * from Offer where latitude>:minLat and latitude < :maxLat and longitude>:minLng and longitude<:maxLng order by id limit :offset, :size";
 		Map params = new HashMap();
+		
+		
 		params.put("minLat", range.getMinLat());
 		params.put("maxLat", range.getMaxLat());
 		params.put("minLng", range.getMinLng());
@@ -76,6 +78,8 @@ public class SafewayDaoImpl extends GenericDaoImpl implements SafewayDao {
 					", 'Created', 0, 0" + 
 					" from Store";
 		update(sql);
+		
+		
     }
 
 }

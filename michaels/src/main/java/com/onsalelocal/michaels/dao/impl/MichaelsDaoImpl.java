@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import com.gaoshin.onsalelocal.api.Store;
 import com.gaoshin.onsalelocal.api.StoreList;
+import com.onsalelocal.michaels.dao.Cities;
 import com.onsalelocal.michaels.dao.MichaelsDao;
 
 import common.db.dao.impl.GenericDaoImpl;
@@ -21,5 +22,25 @@ public class MichaelsDaoImpl extends GenericDaoImpl implements MichaelsDao {
 		data.setItems(list);
 	    return data;
     }
+    
+  public List<Cities> getcities()	  
+  
+  {
+	  String sql = "select city,state from geo.uscities";
+		List<Cities> list = queryBySql(Cities.class, null, sql);
+		for(Cities city:list){
+		 System.out.println("city:"+city.getCity());
+		 System.out.println("state:"+city.getState());
 
+	  
+		}
+	return list;
+	  
+	  
+	  
+  }
+ 
+	  
+	  
+	
 }
