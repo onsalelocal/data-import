@@ -21,4 +21,11 @@ public class TargetDaoImpl extends GenericDaoImpl implements TargetDao {
 	    return data;
     }
 
+	@Override
+    public Store getOneStoreWithoutAddress() {
+		String sql = "select * from Store where address is null limit 1";
+		Store store = queryUniqueBySql(Store.class, null, sql);
+	    return store;
+    }
+
 }

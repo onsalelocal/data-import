@@ -11,14 +11,17 @@ import com.gaoshin.onsalelocal.api.Store;
 import com.gaoshin.onsalelocal.safeway.dao.SafewayDao;
 import com.gaoshin.onsalelocal.safeway.service.SafewayService;
 import common.db.dao.GeoDao;
-import common.geo.yahoo.Yapi;
-import common.geo.yahoo.Yresponse;
+import common.geo.GeoService;
+import common.geo.Geocode;
+import common.geo.Location;
+import common.geo.google.GoogleGeoService;
 
 @Service("safewayService")
 @Transactional(readOnly=true)
 public class SafewayServiceImpl extends ServiceBaseImpl implements SafewayService {
 	@Autowired private SafewayDao safewayDao;
 	@Autowired private GeoDao geoDao;
+	private GeoService geoService = new GoogleGeoService();
 
 	@Override
 	@Transactional(readOnly=false, rollbackFor=Throwable.class)
@@ -27,13 +30,14 @@ public class SafewayServiceImpl extends ServiceBaseImpl implements SafewayServic
 		for(Store store : stores) {
 			String location = store.getAddress();
 			try {
-				Yresponse resp = Yapi.geo(location);
-				store.setLatitude(new BigDecimal(resp.getResult().getLatitude()));
-				store.setLongitude(new BigDecimal(resp.getResult().getLongitude()));
-				store.setAddress(resp.getResult().getLine1());
-				store.setCity(resp.getResult().getCity());
-				store.setState(resp.getResult().getStatecode());
-				store.setZipcode(resp.getResult().getUzip());
+				Location loc = geoService.geo(location);
+				Geocode geo = loc.getGeocode();
+				store.setLatitude(new BigDecimal(geo.getLatitude()));
+				store.setLongitude(new BigDecimal(geo.getLongitude()));
+				store.setAddress(loc.getAddr().toString());
+				store.setCity(loc.getAddr().getCity());
+				store.setState(loc.getAddr().getState());
+				store.setZipcode(loc.getAddr().getZipcode());
 			} catch (Exception e) {
 				e.printStackTrace();
 				store.setLatitude(new BigDecimal(0));
