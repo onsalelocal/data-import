@@ -28,4 +28,11 @@ public class TargetResource extends JerseyBaseResource {
     	targetService.fetchStores();
     	return new GenericResponse();
     }
+    
+    @Path("geo")
+    @GET
+    public GenericResponse geo() {
+    	targetService.geo();
+    	return new GenericResponse();
+    }
 }

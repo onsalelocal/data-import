@@ -28,4 +28,9 @@ public class TargetDaoImpl extends GenericDaoImpl implements TargetDao {
 	    return store;
     }
 
+	@Override
+	public List<Store> getNoGeoStores() {
+		String sql = "select * from Store where latitude is null";
+		return queryBySql(Store.class, null, sql);
+	}
 }

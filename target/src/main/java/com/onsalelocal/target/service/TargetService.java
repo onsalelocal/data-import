@@ -8,4 +8,6 @@ public interface TargetService {
 
 	void fetchStores();
 
+	void geo();
+
 }
