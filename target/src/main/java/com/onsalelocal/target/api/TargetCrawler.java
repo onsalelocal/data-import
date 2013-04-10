@@ -40,7 +40,28 @@ public class TargetCrawler extends CrawlerBase {
 		
 		List<Offer> offers = new ArrayList<Offer>();
 		for(Link cat : categories) {
-			
+			doc = getDocumentFromUrl("http://m.weeklyad.target.com" + cat.href);
+			List<Element> prices = selectElements(doc, "P", "class", "price");
+			for(Element ele : prices) {
+				String price = ele.getTextTrim();
+				String desc = selectElement(ele.getParent(), "DIV", "class", "wa_proddesc").getTextTrim();
+				Element parent = ele.getParent();
+				Element imgElem = selectElement(parent, "IMG");
+				String img = imgElem.attribute("src").getStringValue();
+				String link = selectElement(ele.getParent().getParent().getParent(), "A").attribute("href").getStringValue();
+				if(!link.startsWith("http"))
+					link = "http://m.weeklyad.target.com" + link;
+				Offer offer = new Offer();
+				offer.setCity(city);
+				offer.setState(state);
+				offer.setZipcode(zipcode);
+				offer.setCategory(cat.title);
+				offer.setTitle(desc);
+				offer.setUrl(link);
+				offer.setPrice(price);
+				offer.setSmallImg(img);
+				offers.add(offer);
+			}
 		}
 		
 		return offers;
@@ -95,6 +116,9 @@ public class TargetCrawler extends CrawlerBase {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		getInfoFromHtml();
+		List<Offer> offers = new TargetCrawler().crawleOffers("Chicago", "IL", "60605");
+		for(Offer o : offers) {
+			System.out.println(JacksonUtil.obj2Json(o));
+		}
     }
 }
