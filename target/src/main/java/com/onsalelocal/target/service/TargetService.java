@@ -10,4 +10,6 @@ public interface TargetService {
 
 	void geo();
 
+	void fetchOffers(String city, String state, String zipcode) throws Exception;
+
 }

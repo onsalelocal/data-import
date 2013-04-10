@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
@@ -21,12 +22,17 @@ import common.geo.PostalAddressParser;
 import common.util.JacksonUtil;
 import common.util.LineReader;
 import common.util.LineReader.LineProcessor;
+import common.util.MD5;
 import common.util.PhoneNumberUtil;
 
 public class TargetCrawler extends CrawlerBase {
+	private static final Logger logger = Logger.getLogger(TargetCrawler.class);
+	
 	public List<Offer> crawleOffers(String city, String state, String zipcode) throws Exception {
 		String location = city.toLowerCase() + "-" + state.toLowerCase() + "-" + zipcode;
+		location = location.replace(' ', '-');
 		String url = "http://m.weeklyad.target.com/" + location + "/categories";
+		logger.info("get categories from " + url);
 		Document doc = getDocumentFromUrl(url);
 		
 		List<Link> categories = new ArrayList<Link>();
@@ -35,13 +41,16 @@ public class TargetCrawler extends CrawlerBase {
 			Link link = getLink(ele);
 			if(link != null && link.href != null && link.href.indexOf(location)!=-1) {
 				categories.add(link);
+				logger.info("got category " + link.title + ": " + link.href);
 			}
 		}
 		
 		List<Offer> offers = new ArrayList<Offer>();
 		for(Link cat : categories) {
+			logger.info("get weekly ads for category " + cat.href);
 			doc = getDocumentFromUrl("http://m.weeklyad.target.com" + cat.href);
 			List<Element> prices = selectElements(doc, "P", "class", "price");
+			logger.info("found " + prices.size());
 			for(Element ele : prices) {
 				String price = ele.getTextTrim();
 				String desc = selectElement(ele.getParent(), "DIV", "class", "wa_proddesc").getTextTrim();
@@ -60,6 +69,10 @@ public class TargetCrawler extends CrawlerBase {
 				offer.setUrl(link);
 				offer.setPrice(price);
 				offer.setSmallImg(img);
+				offer.setCreated(System.currentTimeMillis());
+				offer.setStart(offer.getCreated());
+				offer.setEnd(offer.getCreated() + 7*24*3600000);
+				offer.setSourceId(MD5.md5(link));
 				offers.add(offer);
 			}
 		}
@@ -116,7 +129,7 @@ public class TargetCrawler extends CrawlerBase {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		List<Offer> offers = new TargetCrawler().crawleOffers("Chicago", "IL", "60605");
+		List<Offer> offers = new TargetCrawler().crawleOffers("mountain view", "ca", "94040");
 		for(Offer o : offers) {
 			System.out.println(JacksonUtil.obj2Json(o));
 		}

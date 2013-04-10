@@ -2,14 +2,18 @@ package com.onsalelocal.target.service.impl;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gaoshin.onsalelocal.api.Offer;
 import com.gaoshin.onsalelocal.api.Store;
 import com.gaoshin.onsalelocal.api.StoreList;
+import com.onsalelocal.target.api.TargetCrawler;
 import com.onsalelocal.target.dao.TargetDao;
 import com.onsalelocal.target.service.TargetService;
 import common.db.dao.GeoDao;
@@ -79,5 +83,25 @@ public class TargetServiceImpl implements TargetService {
 			targetDao.updateEntity(store, "latitude", "longitude", "address", "city", "state", "zipcode");
 		}
 	}
+
+	@Override
+	@Transactional(readOnly=false, rollbackFor=Throwable.class)
+    public void fetchOffers(String city, String state, String zipcode) throws Exception {
+		List<Offer> offers = new TargetCrawler().crawleOffers(city, state, zipcode);
+		for(Offer offer : offers) {
+			Map<String, Object> where = new HashMap<String, Object>();
+			where.put("city", offer.getCity());
+			where.put("state", offer.getState());
+			where.put("zipcode", offer.getZipcode());
+			offer.setSource("target");
+			offer.setRootSource("target");
+			Store store = targetDao.queryUniqueBySql(Store.class, where, "select * from Store where city=:city and state=:state and zipcode=:zipcode" );
+			if(store != null) {
+				offer.setLatitude(store.getLatitude().floatValue());
+				offer.setLongitude(store.getLongitude().floatValue());
+			}
+			targetDao.insert(offer, true);
+		}
+    }
 
 }
