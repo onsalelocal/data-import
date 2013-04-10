@@ -1,5 +1,6 @@
 package com.onsalelocal.target.service.impl;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -16,6 +17,11 @@ import common.geo.GeoService;
 import common.geo.Geocode;
 import common.geo.Location;
 import common.geo.google.GoogleGeoService;
+import common.util.JacksonUtil;
+import common.util.LineReader;
+import common.util.LineReader.LineProcessor;
+import common.util.web.BusinessException;
+import common.util.web.ServiceError;
 
 @Service("targetService")
 @Transactional(readOnly=true)
@@ -32,7 +38,22 @@ public class TargetServiceImpl implements TargetService {
 	@Override
 	@Transactional(readOnly=false, rollbackFor=Throwable.class)
     public void fetchStores() {
-		// get list of stores for Target, save to database
+		LineReader lr = new LineReader(this.getClass().getResourceAsStream("/store-json.txt"));
+		try {
+	        lr.start(new LineProcessor() {
+	        	@Override
+	        	public void process(String line) {
+	        		try {
+	                    Store store = JacksonUtil.json2Object(line, Store.class);
+	                    targetDao.insert(store, true);
+                    } catch (Exception e) {
+            	        throw new BusinessException(ServiceError.Unknown, e);
+                    }
+	        	}
+	        });
+        } catch (IOException e) {
+	        throw new BusinessException(ServiceError.Unknown, e);
+        }
     }
 
 	@Override
