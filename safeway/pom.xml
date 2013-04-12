@@ -50,7 +50,7 @@
         <dependency>
             <artifactId>common</artifactId>
             <groupId>com.gaoshin.onsalelocal</groupId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <artifactId>onsalelocal-api</artifactId>
